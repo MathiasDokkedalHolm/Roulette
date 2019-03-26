@@ -6,51 +6,62 @@ print('Welcome to Roulette!\n')
 
 playerDict = addplayer()
 
-betDict = bet(playerDict) 
-
-winningnumber = spin()
-
-
 resultDict = {0: ['0', 'Green'], 1: ['1', 'Red', 'Odd', 'Low', 'Dozen 1', 'Column 1'], 2: ['2', 'Black', 'Even', 'Low', 'Dozen 1', 'Column 2'], 3: ['3', 'Red', 'Odd', 'Low', 'Dozen 1', 'Column 3'], 4: ['4', 'Black', 'Even', 'Low', 'Dozen 1', 'Column 1'], 5: ['5', 'Red', 'Odd', 'Low', 'Dozen 1', 'Column 2'], 6: ['6', 'Black', 'Even', 'Low', 'Dozen 1', 'Column 3'], 7: ['7', 'Red', 'Odd', 'Low', 'Dozen 1', 'Column 1'], 8: ['8', 'Black', 'Even', 'Low', 'Dozen 1', 'Column 2'], 9: ['9', 'Red', 'Odd', 'Low', 'Dozen 1', 'Column 3'], 10: ['10', 'Black', 'Even', 'Low', 'Dozen 1', 'Column 1'], 11: ['11', 'Black', 'Odd', 'Low', 'Dozen 1', 'Column 2'], 12: ['12', 'Red', 'Even', 'Low', 'Dozen 1', 'Column 3'], 13: ['13', 'Black', 'Odd', 'Low', 'Dozen 2', 'Column 1'], 14: ['14', 'Red', 'Even', 'Low', 'Dozen 2', 'Column 2'], 15: ['15', 'Black', 'Odd', 'Low', 'Dozen 2', 'Column 3'], 16: ['16', 'Red', 'Even', 'Low', 'Dozen 2', 'Column 1'], 17: ['17', 'Black', 'Odd', 'Low', 'Dozen 2', 'Column 2'], 18: ['18', 'Red', 'Even', 'Low', 'Dozen 2', 'Column 3'], 19: ['19', 'Red', 'Odd', 'High', 'Dozen 2', 'Column 1'], 20: ['20', 'Black', 'Even', 'High', 'Dozen 2', 'Column 2'], 21: ['21', 'Red', 'Odd', 'High', 'Dozen 2', 'Column 3'], 22: ['22', 'Black', 'Even', 'High', 'Dozen 2', 'Column 1'], 23: ['23', 'Red', 'Odd', 'High', 'Dozen 2', 'Column 2'], 24: ['24', 'Black', 'Even', 'High', 'Dozen 2', 'Column 3'], 25: ['25', 'Red', 'Odd', 'High', 'Dozen 3', 'Column 1'], 26: ['26', 'Black', 'Even', 'High', 'Dozen 3', 'Column 2'], 27: ['27', 'Red', 'Odd', 'High', 'Dozen 3', 'Column 3'], 28: ['28', 'Black', 'Even', 'High', 'Dozen 3', 'Column 1'], 29: ['29', 'Black', 'Odd', 'High', 'Dozen 3', 'Column 2'], 30: ['30', 'Red', 'Even', 'High', 'Dozen 3', 'Column 3'], 31: ['31', 'Black', 'Odd', 'High', 'Dozen 3', 'Column 1'], 32: ['32', 'Red', 'Even', 'High', 'Dozen 3', 'Column 2'], 33: ['33', 'Black', 'Odd', 'High', 'Dozen 3', 'Column 3'], 34: ['34', 'Red', 'Even', 'High', 'Dozen 3', 'Column 1'], 35: ['35', 'Black', 'Odd', 'High', 'Dozen 3', 'Column 2'], 36: ['36', 'Red', 'Even', 'High', 'Dozen 3', 'Column 3'], 37: ["00", "Green"]}       
-wincon = resultDict[winningnumber]
 
-boardfactorDict = {"single" : 36, "Dozen1" : 3, "Colum1" : 3, "Dozen2" : 3, "Colum2" : 3, "Dozen3" : 3, "Colum3" : 3, "Low" : 2, "High" : 2, "even" : 2, "Odd" : 2, "Red" : 2, "Black" : 2}
-               
-for con in wincon:
-    if len(con) <= 2:
+fieldList = []
+
+boardfactorDict = {"Dozen1" : 3, "Colum1" : 3, "Dozen2" : 3, "Colum2" : 3, "Dozen3" : 3, "Colum3" : 3, "Low" : 2, "High" : 2, "even" : 2, "Odd" : 2, "Red" : 2, "Black" : 2}
+
+while players > 0:
+    betDict = bet(playerDict, boardfactorDict, resultDict) 
     
-        for player in betDict.keys():
-            
-            factor = 0  
-            
-            for key in betDict[player].keys():
+    winningnumber = spin()
+    
+    wincon = resultDict[winningnumber]
+                 
+    for con in wincon:
+        if len(con) <= 2:
+        
+            for player in betDict.keys():
                 
-                try:
-                    key = int(key)
-                    if isinstance(key, int):
-                        factor += 1
-                        key = str(key)                 
+                factor = 0  
+                
+                for key in betDict[player].keys():
+                    
+                    try:
+                        key = int(key)
+                        if isinstance(key, int):
+                            factor += 1
+                            key = str(key)                 
+                            
+                    except ValueError:
+                        pass                    
+                
+                for key in betDict[player].keys():
+                    
+                    if key == con.title():
                         
-                except ValueError:
-                    pass                    
-            
-            for key in betDict[player].keys():
+                        winning = betDict[player][key] * (36 / factor)
+                        
+                        playerDict[player] += winning
+        else:
+            for player in betDict.keys():
                 
-                if key == con.title():
+                for key in betDict[player].keys():
                     
-                    winning = betDict[player][key] * (boardfactorDict["single"] / factor)
-                    
-                    playerDict[player] += winning
-    else:
-        for player in betDict.keys():
-            
-            for key in betDict[player].keys():
-                
-                if key == con.title():
-                    
-                    winning = betDict[player][key] * boardfactorDict[key]
-                    
-                    playerDict[player] += winning 
+                    if key == con.title():
+                        
+                        winning = betDict[player][key] * boardfactorDict[key]
+                        
+                        playerDict[player] += winning
+        
+        #Print players and amounts
+        #State which players are bankrupt, and delete from table
+        #Does anyone wish to leave the table?
+            #[player] left wiht [amount]
+            #current players: list players + amount 
+        #Recomencing game.
+print("Thanks for playing")  
             
     
 
@@ -61,18 +72,6 @@ Green = (0, 00)
 Even = (2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36)
 Odd = (1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35)
   
-# doz1 : 50
-
-
-#wheel result = 4
-
-
-
-
-# hvis Rand Int = 38 amount * 2 => player.money
-
-
-
 Bet                      Payout  Win probability* Win probability**
 Red / Black (18 numbers)   1:1        48.65%          47.37%
 Even / Odd (18 numbers)    1:1        48.65%          47.37%
